@@ -28,6 +28,7 @@ var dishRouter=require('./routes/dishRouter');
 var promoRouter=require('./routes/promoRouter');
 var leaderRouter=require('./routes/leaderRouter');
 var usersRouter = require('./routes/users');
+var indexRouter=require('./routes/indexRouter');
 
 
 var app = express();
@@ -48,7 +49,7 @@ app.use(session({
   resave:false,
   store:new fileStore()
 }));
-
+app.use('/',indexRouter);
 app.use('/users', usersRouter);
 function auth(req,res,next){
   
