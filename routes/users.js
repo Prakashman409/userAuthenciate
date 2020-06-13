@@ -75,7 +75,7 @@ router.get('/logout', (req, res) => {
   if (req.session) {
     req.session.destroy();
     res.clearCookie('session-id');
-    res.end('you succesfully logout my boy');
+    res.redirect('/')
   }
   else {
     var err = new Error('You are not logged in!');
