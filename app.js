@@ -3,10 +3,11 @@ var express = require('express');
 var path = require('path');
 //var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var passport=require('passport');
+var authenticate=('./authenciate');
+var config=require('./config');
 
 var session=require('express-session');
-var fileStore=require('session-file-store')(session)
 
 
 
@@ -27,7 +28,7 @@ console.log('err occured');
 var dishRouter=require('./routes/dishRouter');
 var promoRouter=require('./routes/promoRouter');
 var leaderRouter=require('./routes/leaderRouter');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/userRouter');
 var indexRouter=require('./routes/indexRouter');
 
 
@@ -42,36 +43,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser('213123-12312-12312312'));
 
-app.use(session({
-  name:'session-id',
-  secret:'1234-234-234',
-  saveUninitialized:false,
-  resave:false,
-  store:new fileStore()
-}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/',indexRouter);
 app.use('/users', usersRouter);
-function auth(req,res,next){
-  
-  
-      if(!req.session.user){
-          var err=new Error('you are not authentic');
-          res.setHeader('WWW-Authenticate','Basic');
-          err.status=401;
-          return next(err)
-        }else{
-          if(req.session.user==='authenticated'){
-            next();
-          }else{
-            var err=new Error('you are not authenticate go ahead');
-            err.status=401;
-            next(err);
-          }
-        }
-      }
- 
 
-app.use(auth)
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -82,7 +60,7 @@ app.use('/promotions',promoRouter);
 app.use('/leaders',leaderRouter);
 
 
-// catch 404 and forward to error handler
+ //catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
